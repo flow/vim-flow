@@ -32,19 +32,20 @@ endif
 
 " hh_client error format.
 let s:flow_errorformat =
-  \  '%EFile "%f"\, line %l\, characters %c-%.%#,%Z%m,'
-  \ .'Error: %m,'
+  \  '%E%.%#. [ERROR] %m,%CFile "%f"\, line %l\, characters %c-%.%#,%Z%m,'
+  \ .'%+Eis incompatible with,%CFile "%f"\, line %l\, characters %c-%.%#,%Z%m,'
 
 
 " Call wrapper for hh_client.
 function! <SID>FlowClientCall(suffix)
-  " Invoke typechecker.  We strip the trailing newline to avoid an empty
-  " error.  We also concatenate with the empty string because otherwise
+  " Invoke typechecker. We strip the trailing lines to get rid of some logspew for now.
+  " We also concatenate with the empty string because otherwise
   " cgetexpr complains about not having a String argument, even though
   " type(hh_result) == 1.
   let command = '~/fbcode/_bin/hphp/hack/src/hh_server --from-vim --flow --check '.getcwd().' '.a:suffix
-  echo "Running flow check: ".command
-  let hh_result = system(command)[:-2].''
+  let raw_result = split(system(command), "\n")
+  let end_offset = len(raw_result) - index(raw_result, "Globals:") + 1
+  let hh_result = join(raw_result[:-end_offset], "\n").''
 
   let old_fmt = &errorformat
   let &errorformat = s:flow_errorformat
@@ -66,7 +67,9 @@ endfunction
 
 " Main interface functions.
 function! flow#typecheck()
-  call <SID>FlowClientCall('| sed "s/No errors!//"')
+  " Flow current outputs errors to stderr and gets fancy with single character
+  " files
+  call <SID>FlowClientCall('2>&1 > /dev/null | grep -v ".*\.js:$" | sed "s/character \([0-9]*\):/characters \1-\1:/"')
 endfunction
 
 function! flow#find_refs(fn)
@@ -99,8 +102,7 @@ command! FlowMake   call flow#typecheck()
 command! FlowType   call flow#get_type()
 command! -nargs=1 FlowFindRefs call flow#find_refs(<q-args>)
 
-au BufWritePost *.php if g:flow#enable | call flow#typecheck() | endif
-au BufWritePost *.hhi if g:flow#enable | call flow#typecheck() | endif
+au BufWritePost *.js if g:flow#enable | call flow#typecheck() | endif
 
 
 " Keep quickfix window at an adjusted height.

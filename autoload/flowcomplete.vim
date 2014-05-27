@@ -1,11 +1,4 @@
 " Vim completion script
-" Language:     Hack (PHP)
-" Maintainer:   Max Wang <mwang@fb.com>
-" Maintainer:   Srećko Toroman <storoman@fb.com>
-" URL:          https://github.com/hhvm/vim-hack
-" Last Change:  April 3, 2014
-"
-" Copyright: (c) 2014, Facebook Inc.  All rights reserved.
 "
 " This source code is licensed under the BSD-style license found in the
 " LICENSE file in the toplevel directory of this source tree.  An additional
@@ -26,7 +19,7 @@ function! s:FindStart()
   return start
 endfunction
 
-function! hackcomplete#Complete(findstart, base)
+function! flowcomplete#Complete(findstart, base)
   if a:findstart
     return s:FindStart()
   end

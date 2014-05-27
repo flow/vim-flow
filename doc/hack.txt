@@ -1,0 +1,181 @@
+*hack.txt*  Syntax highlighting and typechecker integration for Hack
+
+                                                            *hack* *hack.vim*
+
+                                                For Vim version 7.0 or newer
+
+                         By Srecko Toroman and Max Wang
+                                storoman@fb.com
+                                  mwang@fb.com
+
+                                Reference Manual ~
+
+                                                                    *hack-toc*
+
+1. Introduction                                                   |hack-intro|
+2. Quickfix                                                    |hack-quickfix|
+3. Autocomplete                                                |hack-omnifunc|
+
+===============================================================================
+1. Introduction                                                   *hack-intro*
+
+Hack is a programming language for HHVM that interoperates seamlessly with PHP.
+It enables programmers to explicitly annotate their PHP code with static types
+and introduces other powerful language constructs such as collections and async
+functions.  See http://hacklang.org/ for further information about Hack.
+
+Hack provides quick type information at "compile" time via a local server that
+watches a Hack source directory.  The client program `hh_client' offers a rich
+interface to the type information that the `hh_server' maintains.  This vim
+package integrates this functionality into vim in order to provide two major
+functionalities:
+
+Error handling using the |quickfix| window:
+- Type checking; e.g., function foo() has return type `string', which is
+  incompatible with `int'.
+- Syntax errors; e.g., `return' without a semicolon.
+- Other errors; e.g., a class is missing an implementation for an abstract
+  method.
+
+Omnicompletion:
+- Type $this-><C-x><C-o> and get a context- and type- aware auto complete menu,
+  containing only the methods and properties on $this, along with type info.
+- Type $<C-x><C-o> and get a list of local variables.
+
+Hack's detailed type error traces and stored context can make these invaluable
+tools when working with code anywhere along the spectrum of PHP to strictly-
+typed Hack.
+
+===============================================================================
+2. Quickfix                                                    *hack-quickfix*
+
+The Hack typechecker plugin exposes the following functions:
+
+  hack#typecheck()......Invoke the typechecker.               |hack-typecheck|
+      +--aliased as :HackMake
+
+  hack#find_refs(fn)....List all uses of function `fn'.       |hack-find-refs|
+      +--aliased as :HackFindRefs
+
+  hack#get_type().......Get the Hack type of the Hack          |hack-get-type|
+                        expression under the cursor.
+      +--aliased as :HackType
+
+  hack#toggle().........Toggle whether or not the typechecker    |hack-toggle|
+                        runs on a buffer when it's written.
+      +--aliased as :HackToggle
+
+In addition, the following configuration flags are exposed:
+
+  hack#enable=1     Whether or not Hack runs the typechecker on the current
+                    buffer when it is written.  This is the same flag which is
+                    toggled by hack#toggle().
+
+  hack#autoclose=1  Whether the quickfix window is closed automatically if the
+                    typechecker is run with no errors.
+
+  hack#errjmp=0     Whether to automatically jump to the buffer and position of
+                    the first error found by the typechecker when it is run.
+                    Defaults to off.
+
+  hack#qfsize=1     Whether to resize the quickfix window automatically to a
+                    reasonable size, for some definition of reasonable.  Note
+                    that this affects quickfix windows globally.
+
+-------------------------------------------------------------------------------
+                                                  *HackMake*  *hack-typecheck*
+
+Suppose we create a PHP file in the `hh_server' root directory called foo.php,
+with the following contents:
+
+  <?hh
+
+  class Foo {
+    private ?int $bar;
+
+    public function baz(): int {
+      return $this->bar;
+    }
+  }
+
+Invoking :HackMake, calling hack#typecheck(), or, by default, writing the
+buffer, will yield the following in the quickfix window:
+
+  foo.php|7 col 12 error|  Invalid return type
+  foo.php|6 col 26 error|  This is an int
+  foo.php|4 col 11 error|  It is incompatible with a nullable type
+
+The expressive Hack errors are all imported into the quickfix list, which can
+be interfaced with :cc, :cn, :cp, and other |quickfix| commands as usual.
+
+The behavior of this functionality can be controlled by the configuration flags
+described above.
+
+-------------------------------------------------------------------------------
+                                              *HackFindRefs*  *hack-find-refs*
+
+The Hack server also keeps track of references to each defined function.  To
+populate the quickfix window with such a list for, e.g., the function
+Foo::quux(), simply execute
+
+  :HackFindRefs Foo::quux
+
+Presently, the returned list will have entries of the form
+
+  blah.php|35 col 15 error|
+
+though this is subject to future improvement.
+
+-------------------------------------------------------------------------------
+                                                   *HackType*  *hack-get-type*
+
+The Hack server can be queried for the type of a given variable or value
+anywhere in the program.  If the cursor is over `$this->bar' in the example for
+|hack-typecheck|, then executing
+
+  :HackType
+
+will echo the line
+
+  HackType: ?int
+
+This is not restricted to explicitly typed properties, but works also for local
+variables and function returns.
+
+-------------------------------------------------------------------------------
+                                                   *HackToggle*  *hack-toggle*
+
+The hack#toggle() function and :HackToggle command simply flip the value of
+hack#enable, making it easy to turn the typecheck-on-save feature off and on.
+
+===============================================================================
+3. Autocomplete                                                *hack-omnifunc*
+
+Autocomplete functionality is built natively into the Hack client.  Suppose we
+have the following source code:
+
+  <?hh
+
+  class Foo {
+    private ?int $bar;
+
+    public function baz(): int {
+      return $this->b
+    }
+  }
+
+and we enter insert mode, with the cursor after the `$this->b'.  Using
+omnicompletion with <CTRL-x><CTRL-o> yields an autocomplete menu containing:
+
+  bar v ?int
+  baz f (): int
+
+Omnicompletion settings are configurable in the usual way, e.g., with
+|'completeopt'|; the omnicomplete menu is navigable in the usual way with
+<CTRL-n> and <CTRL-p>.  See |compl-omni| for further documentation on
+omnicompletion.
+
+Since Hack types code quickly across the source tree, Hack omnicomplete
+provides fast completion with full knowledge of your codebase.
+
+===============================================================================

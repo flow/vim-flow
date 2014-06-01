@@ -42,10 +42,8 @@ function! <SID>FlowClientCall(suffix)
   " We also concatenate with the empty string because otherwise
   " cgetexpr complains about not having a String argument, even though
   " type(hh_result) == 1.
-  let command = '~/fbcode/_bin/hphp/hack/src/hh_server --from-vim --flow --check '.getcwd().' '.a:suffix
-  let raw_result = split(system(command), "\n")
-  let end_offset = len(raw_result) - index(raw_result, "Globals:") + 1
-  let hh_result = join(raw_result[:-end_offset], "\n").''
+  let command = '~/fbcode/_bin/hphp/hack/src/facebook/flow/flow check '.expand('%:p').' '.a:suffix
+  let hh_result = system(command)
 
   let old_fmt = &errorformat
   let &errorformat = s:flow_errorformat

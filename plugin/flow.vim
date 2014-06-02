@@ -36,12 +36,18 @@ let s:flow_errorformat = '%EFile "%f"\, line %l\, characters %c-%.%#,%Z%m,'
 
 " Call wrapper for hh_client.
 function! <SID>FlowClientCall(suffix)
-  " Invoke typechecker. We strip the trailing lines to get rid of some logspew for now.
+  " Invoke typechecker. 
   " We also concatenate with the empty string because otherwise
   " cgetexpr complains about not having a String argument, even though
   " type(hh_result) == 1.
-  let command = '~/fbcode/_bin/hphp/hack/src/facebook/flow/flow --from vim '.expand('%:p').' '.a:suffix
+  let command = 'timeout 2 ~/fbcode/_bin/hphp/hack/src/facebook/flow/flow --from vim '.expand('%:p').' '.a:suffix
+
   let hh_result = system(command)
+
+  " Handle timeout
+  if v:shell_error == 124
+    return 0
+  endif
 
   let old_fmt = &errorformat
   let &errorformat = s:flow_errorformat

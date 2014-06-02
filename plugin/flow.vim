@@ -20,7 +20,7 @@ if !exists("g:flow#enable")
   let g:flow#enable = 0
 endif
 if !exists("g:flow#autoclose")
-  let g:flow#autoclose = 1
+  let g:flow#autoclose = 0
 endif
 if !exists("g:flow#errjmp")
   let g:flow#errjmp = 0
@@ -31,9 +31,7 @@ endif
 
 
 " hh_client error format.
-let s:flow_errorformat =
-  \  '%E%.%#. [ERROR] %m,%CFile "%f"\, line %l\, characters %c-%.%#,%Z%m,'
-  \ .'%+Eis incompatible with,%CFile "%f"\, line %l\, characters %c-%.%#,%Z%m,'
+let s:flow_errorformat = '%EFile "%f"\, line %l\, characters %c-%.%#,%Z%m,'
 
 
 " Call wrapper for hh_client.
@@ -42,7 +40,7 @@ function! <SID>FlowClientCall(suffix)
   " We also concatenate with the empty string because otherwise
   " cgetexpr complains about not having a String argument, even though
   " type(hh_result) == 1.
-  let command = '~/fbcode/_bin/hphp/hack/src/facebook/flow/flow check '.expand('%:p').' '.a:suffix
+  let command = '~/fbcode/_bin/hphp/hack/src/facebook/flow/flow --from vim '.expand('%:p').' '.a:suffix
   let hh_result = system(command)
 
   let old_fmt = &errorformat
@@ -67,7 +65,7 @@ endfunction
 function! flow#typecheck()
   " Flow current outputs errors to stderr and gets fancy with single character
   " files
-  call <SID>FlowClientCall('2>&1 > /dev/null | grep -v ".*\.js:$" | sed "s/character \([0-9]*\):/characters \1-\1:/"')
+  call <SID>FlowClientCall('2> /dev/null')
 endfunction
 
 function! flow#find_refs(fn)

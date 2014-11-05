@@ -22,7 +22,7 @@ endfunction
 function! flowcomplete#Complete(findstart, base)
   if a:findstart
     return s:FindStart()
-  end
+  endif
 
   let lnum = line('.')
   let cnum = col('.')

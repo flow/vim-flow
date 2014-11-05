@@ -5,8 +5,8 @@ if exists("g:loaded_flow")
 endif
 let g:loaded_flow = 1
 
-" Require the hh_client executable.
-if !executable('hh_client')
+" Require the flow executable.
+if !executable('flow')
   finish
 endif
 
@@ -30,17 +30,17 @@ if !exists("g:flow#qfsize")
 endif
 
 
-" hh_client error format.
+" flow error format.
 let s:flow_errorformat = '%EFile "%f"\, line %l\, characters %c-%.%#,%Z%m,'
 
 
-" Call wrapper for hh_client.
+" Call wrapper for flow.
 function! <SID>FlowClientCall(suffix)
   " Invoke typechecker. 
   " We also concatenate with the empty string because otherwise
   " cgetexpr complains about not having a String argument, even though
   " type(hh_result) == 1.
-  let command = 'timeout 2 ~/fbcode/_bin/hphp/hack/src/facebook/flow/flow --from vim '.expand('%:p').' '.a:suffix
+  let command = 'timeout 2 flow --from vim '.expand('%:p').' '.a:suffix
 
   let hh_result = system(command)
 
@@ -80,8 +80,8 @@ endfunction
 
 " Get the Flow type at the current cursor position.
 function! flow#get_type()
-  let pos = fnameescape(expand('%')).':'.line('.').':'.col('.')
-  let cmd = 'hh_client --type-at-pos '.pos
+  let pos = fnameescape(expand('%')).' '.line('.').' '.col('.')
+  let cmd = 'flow type-at-pos '.pos
 
   let output = 'FlowType: '.system(cmd)
   let output = substitute(output, '\n$', '', '')

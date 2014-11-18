@@ -5,7 +5,7 @@
 " grant of patent rights can be found in the PATENTS file in the same
 " directory.
 
-" Magical hh_client autocomplete token.
+" Magical flow autocomplete token.
 let s:autotok = 'AUTO332'
 
 " Omni findstart phase.
@@ -32,13 +32,13 @@ function! flowcomplete#Complete(findstart, base)
   let curline = lines[lnum - 1]
   let lines[lnum - 1] = curline[:cnum - 1] . a:base . s:autotok . curline[cnum :]
 
-  " Pass the buffer to hh_client.
+  " Pass the buffer to flow.
   let buffer = join(lines, "\n")
-  let result = system('hh_client --auto-complete', buffer)
+  let result = system('flow autocomplete', buffer)
 
   let matches = []
 
-  " Parse the hh_client output.
+  " Parse the flow output.
   for line in split(result, "\n")
     if empty(line) | continue | endif
 

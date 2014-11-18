@@ -5,8 +5,8 @@ if exists("b:did_ftplugin_flow")
 endif
 let b:did_ftplugin_flow = 1
 
-" Require the hh_client executable.
-if !executable('hh_client')
+" Require the flow executable.
+if !executable('flow')
   finish
 endif
 

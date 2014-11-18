@@ -39,10 +39,10 @@ function! <SID>FlowClientCall(suffix)
   " Invoke typechecker. 
   " We also concatenate with the empty string because otherwise
   " cgetexpr complains about not having a String argument, even though
-  " type(hh_result) == 1.
+  " type(flow_result) == 1.
   let command = 'timeout 2 flow --from vim '.expand('%:p').' '.a:suffix
 
-  let hh_result = system(command)
+  let flow_result = system(command)
 
   " Handle timeout
   if v:shell_error == 124
@@ -53,9 +53,9 @@ function! <SID>FlowClientCall(suffix)
   let &errorformat = s:flow_errorformat
 
   if g:flow#errjmp
-    cexpr hh_result
+    cexpr flow_result
   else
-    cgetexpr hh_result
+    cgetexpr flow_result
   endif
 
   if g:flow#autoclose

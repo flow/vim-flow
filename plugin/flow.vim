@@ -17,7 +17,7 @@ endif
 " - errjmp:     Jump to errors after typechecking; default off.
 " - qfsize:     Let the plugin control the quickfix window size.
 if !exists("g:flow#enable")
-  let g:flow#enable = 0
+  let g:flow#enable = 1
 endif
 if !exists("g:flow#autoclose")
   let g:flow#autoclose = 0
@@ -40,12 +40,12 @@ function! <SID>FlowClientCall(suffix)
   " We also concatenate with the empty string because otherwise
   " cgetexpr complains about not having a String argument, even though
   " type(flow_result) == 1.
-  let command = 'timeout 2 flow --from vim '.expand('%:p').' '.a:suffix
+  let command = 'flow --timeout 2 --from vim '.expand('%:p').' '.a:suffix
 
   let flow_result = system(command)
 
   " Handle timeout
-  if v:shell_error == 124
+  if v:shell_error == 3
     return 0
   endif
 

@@ -16,6 +16,7 @@ endif
 " - autoclose:  Quickfix window closes automatically.
 " - errjmp:     Jump to errors after typechecking; default off.
 " - qfsize:     Let the plugin control the quickfix window size.
+" - flowpath:   Path to the flow executable - default is flow in path
 if !exists("g:flow#enable")
   let g:flow#enable = 1
 endif
@@ -27,6 +28,9 @@ if !exists("g:flow#errjmp")
 endif
 if !exists("g:flow#qfsize")
   let g:flow#qfsize = 1
+endif
+if !exists("g:flow#flowpath")
+  let g:flow#flowpath = "flow"
 endif
 
 
@@ -40,7 +44,7 @@ function! <SID>FlowClientCall(suffix)
   " We also concatenate with the empty string because otherwise
   " cgetexpr complains about not having a String argument, even though
   " type(flow_result) == 1.
-  let command = 'flow --timeout 2 --from vim '.expand('%:p').' '.a:suffix
+  let command = g:flow#flowpath.' --timeout 2 --from vim '.expand('%:p').' '.a:suffix
 
   let flow_result = system(command)
 
@@ -81,7 +85,7 @@ endfunction
 " Get the Flow type at the current cursor position.
 function! flow#get_type()
   let pos = fnameescape(expand('%')).' '.line('.').' '.col('.')
-  let cmd = 'flow type-at-pos '.pos
+  let cmd = g:flow#flowpath.' type-at-pos '.pos
 
   let output = 'FlowType: '.system(cmd)
   let output = substitute(output, '\n$', '', '')

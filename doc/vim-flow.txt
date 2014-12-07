@@ -2,43 +2,43 @@
                                                                     *vim-flow*
 
 ==============================================================================
-CONTENTS                                                   *vim-flow-contents*
+CONTENTS                                                     *vim-flow-contents*
 
-Variables                                                 |vim-flow-variables|
+Variables                                                   |vim-flow-variables|
 
 ------------------------------------------------------------------------------
-VARIABLES                                               *vim-flow-variables*
+VARIABLES                                                   *vim-flow-variables*
 
-g:flow#autoclose                                               *g:flow#autoclose*
+g:flow#autoclose                                              *g:flow#autoclose*
 
-If this is set to 1, the |quickfix| window opened when vim-flow finds an error
+If this is set to 1, the |quickfix| window opened when the plugin finds an error
 will close automatically.
 
 Default is 0.
 
-g:flow#enable                                               *g:flow#enable*
+g:flow#enable                                                    *g:flow#enable*
 
-Typechecking is done automattically on :w if set to 1.
+Typechecking is done automatically on :w if set to 1.
 
 To disable this, set to 0 in your ~/.vimrc, like so:
 let g:flow#enable = 0
 
 Default is 1.
 
-g:flow#errjmp                                               *g:flow#errjmp*
+g:flow#errjmp                                                    *g:flow#errjmp*
 
 Jump to errors after typechecking if set to 1.
 
 Default is 0.
 
-g:flow#flowpath                                               *g:flow#flowpath*
+g:flow#flowpath                                                 *g:flow#flowpath*
 
 Leave this as default to use the flow executable defined on your path. To use
 a custom flow executable, set this like so:
 
 let g:flow#flowpath = /your/flow-path/flow
 
-g:flow#qfsize                                               *g:flow#qfsize*
+g:flow#qfsize                                                     *g:flow#qfsize*
 
 Leave this as default to let the plugin decide on the |quickfix| window size.
 

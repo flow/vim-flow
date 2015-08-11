@@ -99,6 +99,15 @@ a custom flow executable, set this like so:
 let g:flow#flowpath = /your/flow-path/flow
 ```
 
+#### `g:flow#omnifunc`
+
+By default `omnifunc` will be set to provide omni completion. To disable it
+(prevent overwriting an existed omnifunc), set this value to 0:
+
+```VimL
+let g:flow#omnifunc = 0
+```
+
 #### `g:flow#qfsize`
 
 Leave this as default to let the plugin decide on the quickfix window size.

@@ -34,7 +34,8 @@ function! flowcomplete#Complete(findstart, base)
 
   " Pass the buffer to flow.
   let buffer = join(lines, "\n")
-  let result = system('flow autocomplete', buffer)
+  let command = g:flow#flowpath.' autocomplete '.expand('%:p')
+  let result = system(command, buffer)
 
   let matches = []
 

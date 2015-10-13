@@ -43,7 +43,7 @@ Add this to your `~/.vimrc`
 ```
 ## Usage
 
-Unless [disabled manually][gflowenable], vim-flow will check JavaScript files on save.
+Unless [disabled manually][gflowenable], vim-flow will check JavaScript and JSX files on save.
 
 ## Commands
 

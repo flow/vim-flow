@@ -108,7 +108,7 @@ command! FlowMake   call flow#typecheck()
 command! FlowType   call flow#get_type()
 command! -nargs=1 FlowFindRefs call flow#find_refs(<q-args>)
 
-au BufWritePost *.js if g:flow#enable | call flow#typecheck() | endif
+au BufWritePost *.js,*.jsx if g:flow#enable | call flow#typecheck() | endif
 
 
 " Keep quickfix window at an adjusted height.

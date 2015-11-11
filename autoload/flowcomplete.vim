@@ -45,38 +45,21 @@ function! flowcomplete#Complete(findstart, base)
 
     let entry = {}
     let space = stridx(line, ' ')
+    let word = line[:space - 1]
+    let type = line[space + 1 :]
 
-    if line[0] == '$'
-      " Variable.
-      let name_end = (space == -1) ? strlen(line) : space
+    " Skip matches that don't start with the base"
+    if (stridx(word, a:base) != 0) | continue | endif
 
-      let word = line[:name_end - 1]
-      if word !~ '^\V'.a:base | continue | endif
-
-      let entry = {'word': word, 'kind': 'v', 'menu': line[name_end :]}
-    elseif space < 0
-      " Class or function, since no type is given.
-      let word = line
-      if word !~ '^\V'.a:base | continue | endif
-
-      " Guess that it's a class if it's TitleCase.
-      let kind = (word[0] ==# toupper(word[0])) ? 'c' : 'f'
-
-      let entry = {'word': word, 'kind': kind}
+    " This is pretty hacky. We're using regexes to recognize the different
+    " kind of matches. Really in the future we should somehow consume the json
+    " output
+    if type =~ '^(.*) =>'
+      let entry = { 'word': word, 'kind': a:base, 'menu': type }
+    elseif type =~ '^[class:'
+      let entry = { 'word': word, 'kind': 'c', 'menu': type }
     else
-      " Method, property, or constant.
-      let word = line[:space - 1]
-      if word !~ '^\V'.a:base | continue | endif
-
-      let menu = line[space + 1 :]
-      if menu =~ '^(function('
-        " Function; remove (function(...)) wrapper.
-        let entry = {'word': word, 'kind': 'f', 'menu': menu[9:-2]}
-      else
-        " Guess that caps means constant.
-        let kind = (word[0] ==# toupper(word[0])) ? 'd' : 'v'
-        let entry = {'word': word, 'kind': kind, 'menu': menu}
-      endif
+      let entry = { 'word': word, 'kind': 'v', 'menu': type }
     endif
 
     call add(matches, entry)

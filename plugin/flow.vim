@@ -44,12 +44,25 @@ function! <SID>FlowClientCall(suffix)
   " We also concatenate with the empty string because otherwise
   " cgetexpr complains about not having a String argument, even though
   " type(flow_result) == 1.
-  let command = g:flow#flowpath.' --timeout 2 --from vim '.expand('%:p').' '.a:suffix
+  let command = g:flow#flowpath.' --timeout 2 --retry-if-init false --from vim '.expand('%:p').' '.a:suffix
 
   let flow_result = system(command)
 
+  " Handle the server still initializing
+  if v:shell_error == 1
+    echohl WarningMsg 
+    echomsg 'Flow server is still initializing...'
+    echohl None
+    cclose
+    return 0
+  endif
+
   " Handle timeout
   if v:shell_error == 3
+    echohl WarningMsg 
+    echomsg 'Flow timed out, please try again!'
+    echohl None
+    cclose
     return 0
   endif
 

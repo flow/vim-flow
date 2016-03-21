@@ -59,10 +59,6 @@ Turns automatic checks on save on or off.
 
 Display the type of the variable under the cursor.
 
-#### `FlowFindRefs <arg>`
-
-Find the number of references to `<arg>` within the project.
-
 ## Configuration
 
 #### `g:flow#autoclose`

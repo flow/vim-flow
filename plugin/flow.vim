@@ -91,10 +91,6 @@ function! flow#typecheck()
   call <SID>FlowClientCall('2> /dev/null')
 endfunction
 
-function! flow#find_refs(fn)
-  call <SID>FlowClientCall('--find-refs '.a:fn.'| sed "s/[0-9]* total results//"')
-endfunction
-
 " Get the Flow type at the current cursor position.
 function! flow#get_type()
   let pos = fnameescape(expand('%')).' '.line('.').' '.col('.')
@@ -119,7 +115,6 @@ endfunction
 command! FlowToggle call flow#toggle()
 command! FlowMake   call flow#typecheck()
 command! FlowType   call flow#get_type()
-command! -nargs=1 FlowFindRefs call flow#find_refs(<q-args>)
 
 au BufWritePost *.js,*.jsx if g:flow#enable | call flow#typecheck() | endif
 

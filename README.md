@@ -16,7 +16,7 @@ A vim plugin for [Flow][flow].
 ### [Pathogen][pathogen]
 
     cd ~/.vim/bundle
-    git clone git://github.com/facebook/vim-flow.git
+    git clone git://github.com/flowtype/vim-flow.git
 
 ### [NeoBundle][neobundle]
 
@@ -108,7 +108,7 @@ let g:flow#omnifunc = 0
 
 Leave this as default to let the plugin decide on the quickfix window size.
 
-[gflowenable]: https://github.com/facebook/vim-flow#gflowenable
+[gflowenable]: https://github.com/flowtype/vim-flow#gflowenable
 [flow]: https://github.com/facebook/flow
 [flowbin]: https://github.com/sindresorhus/flow-bin
 [pathogen]: https://github.com/tpope/vim-pathogen

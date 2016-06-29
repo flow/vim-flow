@@ -5,12 +5,6 @@ if exists("g:loaded_flow")
 endif
 let g:loaded_flow = 1
 
-" Require the flow executable.
-if !executable('flow')
-  finish
-endif
-
-
 " Configuration switches:
 " - enable:     Typechecking is done on :w.
 " - autoclose:  Quickfix window closes automatically.
@@ -33,6 +27,10 @@ if !exists("g:flow#flowpath")
   let g:flow#flowpath = "flow"
 endif
 
+" Require the flow executable.
+if !executable(g:flow#flowpath)
+  finish
+endif
 
 " flow error format.
 let s:flow_errorformat = '%EFile "%f"\, line %l\, characters %c-%.%#,%Z%m,'

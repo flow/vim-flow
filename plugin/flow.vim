@@ -11,6 +11,7 @@ let g:loaded_flow = 1
 " - errjmp:     Jump to errors after typechecking; default off.
 " - qfsize:     Let the plugin control the quickfix window size.
 " - flowpath:   Path to the flow executable - default is flow in path
+" - flowmark:   Mark key flow will set to - default is "F"
 if !exists("g:flow#enable")
   let g:flow#enable = 1
 endif
@@ -25,6 +26,9 @@ if !exists("g:flow#qfsize")
 endif
 if !exists("g:flow#flowpath")
   let g:flow#flowpath = "flow"
+endif
+if !exists("g:flow#flowmark")
+  let g:flow#flowmark = "F"
 endif
 
 " Require the flow executable.
@@ -108,11 +112,27 @@ function! flow#toggle()
   endif
 endfunction
 
+" Jump to Flow definition for the current cursor position
+function! flow#jump_to_def()
+  let pos = fnameescape(expand('%')).' '.line('.').' '.col('.')
+  let cmd = g:flow#flowpath.' get-def '.pos
+
+  let output = system(cmd)
+  let parts = split(output, ":")
+  let file = parts[0]
+  let row = parts[1]
+  let col = split(parts[2], ",")[0]
+  execute 'mark' g:flow#flowmark
+  execute 'edit' file
+  call cursor(row, col)
+endfunction
+
 
 " Commands and auto-typecheck.
 command! FlowToggle call flow#toggle()
 command! FlowMake   call flow#typecheck()
 command! FlowType   call flow#get_type()
+command! FlowJumpToDef call flow#jump_to_def()
 
 au BufWritePost *.js,*.jsx if g:flow#enable | call flow#typecheck() | endif
 

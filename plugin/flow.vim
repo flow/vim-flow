@@ -118,8 +118,10 @@ function! flow#jump_to_def()
   let file = parts[0]
   let row = parts[1]
   let col = split(parts[2], ",")[0]
-  execute 'edit' file
-  call cursor(row, col)
+  if filereadable(file)
+    execute 'edit' file
+    call cursor(row, col)
+  end
 endfunction
 
 

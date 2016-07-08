@@ -34,15 +34,17 @@ endif
 
 " flow error format.
 let s:flow_errorformat = '%EFile "%f"\, line %l\, characters %c-%.%#,%Z%m,'
+" flow from editor.
+let s:flow_from = '--from vim'
 
 
 " Call wrapper for flow.
-function! <SID>FlowClientCall(suffix)
+function! <SID>FlowClientCall(cmd, suffix)
   " Invoke typechecker. 
   " We also concatenate with the empty string because otherwise
   " cgetexpr complains about not having a String argument, even though
   " type(flow_result) == 1.
-  let command = g:flow#flowpath.' --timeout 2 --retry-if-init false --from vim '.expand('%:p').' '.a:suffix
+  let command = g:flow#flowpath.' '.a:cmd.' '.s:flow_from.' '.a:suffix
 
   let flow_result = system(command)
 
@@ -64,6 +66,14 @@ function! <SID>FlowClientCall(suffix)
     return 0
   endif
 
+  return flow_result
+endfunction
+
+" Main interface functions.
+function! flow#typecheck()
+  " Flow current outputs errors to stderr and gets fancy with single character
+  " files
+  let flow_result = <SID>FlowClientCall('--timeout 2 --retry-if-init false'.expand('%:p'), '2> /dev/null')
   let old_fmt = &errorformat
   let &errorformat = s:flow_errorformat
 
@@ -79,14 +89,6 @@ function! <SID>FlowClientCall(suffix)
     botright copen
   endif
   let &errorformat = old_fmt
-endfunction
-
-
-" Main interface functions.
-function! flow#typecheck()
-  " Flow current outputs errors to stderr and gets fancy with single character
-  " files
-  call <SID>FlowClientCall('2> /dev/null')
 endfunction
 
 " Get the Flow type at the current cursor position.
@@ -111,13 +113,21 @@ endfunction
 " Jump to Flow definition for the current cursor position
 function! flow#jump_to_def()
   let pos = fnameescape(expand('%')).' '.line('.').' '.col('.')
-  let cmd = g:flow#flowpath.' get-def '.pos
+  let flow_result = <SID>FlowClientCall('get-def '.pos, '')
+  " Output format is:
+  "   File: "/path/to/file", line 1, characters 1-11
 
-  let output = system(cmd)
-  let parts = split(output, ":")
-  let file = parts[0]
-  let row = parts[1]
-  let col = split(parts[2], ",")[0]
+  let parts = split(flow_result, ",")
+
+  " File: "/path/to/file" => /path/to/file
+  let file = substitute(substitute(parts[0], '"', '', 'g'), 'File ', '', '')
+
+  " line 1 => 1
+  let row = split(parts[1], " ")[1]
+
+  " characters 1-11 => 1
+  let col = split(split(parts[2], " ")[1], "-")[0]
+
   if filereadable(file)
     execute 'edit' file
     call cursor(row, col)

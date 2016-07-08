@@ -134,12 +134,36 @@ function! flow#jump_to_def()
   end
 endfunction
 
+" Open importers of current file in quickfix window
+function! flow#get_importers()
+  let flow_result = <SID>FlowClientCall('get-importers '.expand('%').' --strip-root', '')
+  let importers = split(flow_result, '\n')[1:1000]
+
+  let l:flow_errorformat = '%f'
+  let old_fmt = &errorformat
+  let &errorformat = l:flow_errorformat
+
+  if g:flow#errjmp
+    cexpr importers
+  else
+    cgetexpr importers
+  endif
+
+  if g:flow#autoclose
+    botright cwindow
+  else
+    botright copen
+  endif
+  let &errorformat = old_fmt
+endfunction
+
 
 " Commands and auto-typecheck.
-command! FlowToggle call flow#toggle()
-command! FlowMake   call flow#typecheck()
-command! FlowType   call flow#get_type()
-command! FlowJumpToDef call flow#jump_to_def()
+command! FlowToggle       call flow#toggle()
+command! FlowMake         call flow#typecheck()
+command! FlowType         call flow#get_type()
+command! FlowJumpToDef    call flow#jump_to_def()
+command! FlowGetImporters call flow#get_importers()
 
 au BufWritePost *.js,*.jsx if g:flow#enable | call flow#typecheck() | endif
 

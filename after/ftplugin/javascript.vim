@@ -1,10 +1,5 @@
 " Vim filetype plugin
 
-if exists("b:did_ftplugin_flow")
-  finish
-endif
-let b:did_ftplugin_flow = 1
-
 " Require the flow executable.
 if !executable('flow')
   finish

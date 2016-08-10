@@ -23,7 +23,7 @@ A vim plugin for [Flow][flow].
 Add this to your `~/.vimrc`
 
 ```VimL
-  NeoBundleLazy 'facebook/vim-flow', {
+  NeoBundleLazy 'flowtype/vim-flow', {
             \ 'autoload': {
             \     'filetypes': 'javascript'
             \ }}
@@ -32,7 +32,7 @@ Add this to your `~/.vimrc`
 #### With [Flow][flow] build step, using [flow-bin][flowbin]
 
 ```VimL
-  NeoBundleLazy 'facebook/vim-flow', {
+  NeoBundleLazy 'flowtype/vim-flow', {
             \ 'autoload': {
             \     'filetypes': 'javascript'
             \ },

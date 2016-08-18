@@ -104,6 +104,15 @@ By default `omnifunc` will be set to provide omni completion. To disable it
 let g:flow#omnifunc = 0
 ```
 
+#### `g:flow#timeout`
+
+By default `timeout` will be set to 2 seconds. If you are working on a larger
+codebase, you may want to increase this to avoid errors when Flow initializes.
+
+```VimL
+let g:flow#timeout = 4
+```
+
 #### `g:flow#qfsize`
 
 Leave this as default to let the plugin decide on the quickfix window size.

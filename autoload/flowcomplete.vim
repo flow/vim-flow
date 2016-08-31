@@ -37,6 +37,11 @@ function! flowcomplete#Complete(findstart, base)
   let command = g:flow#flowpath.' autocomplete '.expand('%:p')
   let result = system(command, buffer)
 
+  if result =~ '^Error: not enough type information to autocomplete' ||
+    \ result =~ '^Could not find file or directory'
+    return []
+  endif
+
   let matches = []
 
   " Parse the flow output.

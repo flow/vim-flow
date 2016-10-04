@@ -59,6 +59,10 @@ Turns automatic checks on save on or off.
 
 Display the type of the variable under the cursor.
 
+#### `FlowJumpToDef` 
+
+Jump to the definition of the variable under the cursor.
+
 ## Configuration
 
 #### `g:flow#autoclose`

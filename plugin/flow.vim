@@ -120,6 +120,12 @@ function! flow#jump_to_def()
   " Output format is:
   "   File: "/path/to/file", line 1, characters 1-11
 
+  " Flow returns a single line-feed if no result
+  if strlen(flow_result) == 1
+    echo 'No definition found'
+    return
+  endif
+
   let parts = split(flow_result, ",")
 
   " File: "/path/to/file" => /path/to/file

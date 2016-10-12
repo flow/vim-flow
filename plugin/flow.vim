@@ -30,6 +30,10 @@ if !exists("g:flow#timeout")
   let g:flow#timeout = 2
 endif
 
+if !exists("g:flow#check_enable")
+  let g:flow#check_enable = 1
+endif
+
 " Require the flow executable.
 if !executable(g:flow#flowpath)
   finish
@@ -76,6 +80,11 @@ endfunction
 function! flow#typecheck()
   " Flow current outputs errors to stderr and gets fancy with single character
   " files
+  
+  if !g:flow#check_enable 
+    return
+  endif
+
   let flow_result = <SID>FlowClientCall('--timeout '.g:flow#timeout.' --retry-if-init false'.expand('%:p'), '2> /dev/null')
   let old_fmt = &errorformat
   let &errorformat = s:flow_errorformat

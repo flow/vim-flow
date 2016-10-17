@@ -43,7 +43,7 @@ let s:flow_from = '--from vim'
 
 " Call wrapper for flow.
 function! <SID>FlowClientCall(cmd, suffix)
-  " Invoke typechecker. 
+  " Invoke typechecker.
   " We also concatenate with the empty string because otherwise
   " cgetexpr complains about not having a String argument, even though
   " type(flow_result) == 1.
@@ -53,7 +53,7 @@ function! <SID>FlowClientCall(cmd, suffix)
 
   " Handle the server still initializing
   if v:shell_error == 1
-    echohl WarningMsg 
+    echohl WarningMsg
     echomsg 'Flow server is still initializing...'
     echohl None
     cclose
@@ -62,7 +62,7 @@ function! <SID>FlowClientCall(cmd, suffix)
 
   " Handle timeout
   if v:shell_error == 3
-    echohl WarningMsg 
+    echohl WarningMsg
     echomsg 'Flow timed out, please try again!'
     echohl None
     cclose
@@ -127,6 +127,10 @@ function! flow#jump_to_def()
   endif
 
   let parts = split(flow_result, ",")
+  if len(parts) < 2
+      echo 'cannot find definition'
+      return
+  endif
 
   " File: "/path/to/file" => /path/to/file
   let file = substitute(substitute(parts[0], '"', '', 'g'), 'File ', '', '')
@@ -135,7 +139,10 @@ function! flow#jump_to_def()
   let row = split(parts[1], " ")[1]
 
   " characters 1-11 => 1
-  let col = split(split(parts[2], " ")[1], "-")[0]
+  let col = 0
+  if len(parts) == 3
+    let col = split(split(parts[2], " ")[1], "-")[0]
+  endif
 
   if filereadable(file)
     execute 'edit' file

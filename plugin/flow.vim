@@ -42,7 +42,7 @@ let s:flow_from = '--from vim'
 
 
 " Call wrapper for flow.
-function! <SID>FlowClientCall(cmd, suffix)
+function! g:flow#call(cmd, suffix)
   " Invoke typechecker.
   " We also concatenate with the empty string because otherwise
   " cgetexpr complains about not having a String argument, even though
@@ -76,7 +76,7 @@ endfunction
 function! flow#typecheck()
   " Flow current outputs errors to stderr and gets fancy with single character
   " files
-  let flow_result = <SID>FlowClientCall('--timeout '.g:flow#timeout.' --retry-if-init false'.expand('%:p'), '2> /dev/null')
+  let flow_result = flow#call('--timeout '.g:flow#timeout.' --retry-if-init false'.expand('%:p'), '2> /dev/null')
   let old_fmt = &errorformat
   let &errorformat = s:flow_errorformat
 
@@ -116,7 +116,7 @@ endfunction
 " Jump to Flow definition for the current cursor position
 function! flow#jump_to_def()
   let pos = fnameescape(expand('%')).' '.line('.').' '.col('.')
-  let flow_result = <SID>FlowClientCall('get-def '.pos, '')
+  let flow_result = flow#call('get-def '.pos, '')
   " Output format is:
   "   File: "/path/to/file", line 1, characters 1-11
 
@@ -152,7 +152,7 @@ endfunction
 
 " Open importers of current file in quickfix window
 function! flow#get_importers()
-  let flow_result = <SID>FlowClientCall('get-importers '.expand('%').' --strip-root', '')
+  let flow_result = flow#call('get-importers '.expand('%').' --strip-root', '')
   let importers = split(flow_result, '\n')[1:1000]
 
   let l:flow_errorformat = '%f'

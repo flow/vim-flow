@@ -121,6 +121,10 @@ let g:flow#timeout = 4
 
 Leave this as default to let the plugin decide on the quickfix window size.
 
+#### `g:flow#check_enable`
+
+By default a file is always checked when it's saved. If disabled, any type checks are not performed. Use in order to avoid conflicts with other syntax checker reporters like [syntastic](https://github.com/scrooloose/syntastic).
+
 [gflowenable]: https://github.com/flowtype/vim-flow#gflowenable
 [flow]: https://github.com/facebook/flow
 [flowbin]: https://github.com/sindresorhus/flow-bin

@@ -123,13 +123,13 @@ function! flow#jump_to_def()
   " Flow returns a single line-feed if no result
   if strlen(flow_result) == 1
     echo 'No definition found'
-    return
+    return 1
   endif
 
   let parts = split(flow_result, ",")
   if len(parts) < 2
       echo 'cannot find definition'
-      return
+      return 1
   endif
 
   " File: "/path/to/file" => /path/to/file

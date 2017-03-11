@@ -152,7 +152,7 @@ endfunction
 
 " Open importers of current file in quickfix window
 function! flow#get_importers()
-  let flow_result = <SID>FlowClientCall('get-importers '.expand('%').' --strip-root', '')
+  let flow_result = <SID>FlowClientCall('get-importers "'.expand('%').'" --strip-root', '')
   let importers = split(flow_result, '\n')[1:1000]
 
   let l:flow_errorformat = '%f'

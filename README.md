@@ -67,8 +67,8 @@ Jump to the definition of the variable under the cursor.
 
 #### `g:flow#autoclose`
 
-If this is set to `1`, the |quickfix| window opened when the plugin finds an error
-will close automatically.
+If this is set to `1`, the quickfix window will not be opened when there are
+no errors, and will be automatically closed when previous errors are cleared.
 
 Default is `0`.
 

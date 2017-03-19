@@ -7,7 +7,7 @@ let g:loaded_flow = 1
 
 " Configuration switches:
 " - enable:     Typechecking is done on :w.
-" - autoclose:  Quickfix window closes automatically.
+" - autoclose:  Quickfix window closes automatically when there are no errors.
 " - errjmp:     Jump to errors after typechecking; default off.
 " - qfsize:     Let the plugin control the quickfix window size.
 " - flowpath:   Path to the flow executable - default is flow in path

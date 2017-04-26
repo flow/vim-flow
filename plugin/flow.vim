@@ -6,11 +6,12 @@ endif
 let g:loaded_flow = 1
 
 " Configuration switches:
-" - enable:     Typechecking is done on :w.
-" - autoclose:  Quickfix window closes automatically.
-" - errjmp:     Jump to errors after typechecking; default off.
-" - qfsize:     Let the plugin control the quickfix window size.
-" - flowpath:   Path to the flow executable - default is flow in path
+" - enable:       Typechecking is done on :w.
+" - autoclose:    Quickfix window closes automatically.
+" - errjmp:       Jump to errors after typechecking; default off.
+" - qfsize:       Let the plugin control the quickfix window size.
+" - flowpath:     Path to the flow executable - default is flow in path
+" - showquickfix  Show the quickfix window
 if !exists("g:flow#enable")
   let g:flow#enable = 1
 endif
@@ -28,6 +29,9 @@ if !exists("g:flow#flowpath")
 endif
 if !exists("g:flow#timeout")
   let g:flow#timeout = 2
+endif
+if !exists("g:flow#showquickfix")
+  let g:flow#showquickfix = 1
 endif
 
 " Require the flow executable.
@@ -86,10 +90,12 @@ function! flow#typecheck()
     cgetexpr flow_result
   endif
 
-  if g:flow#autoclose
-    botright cwindow
-  else
-    botright copen
+  if g:flow#showquickfix
+    if g:flow#autoclose
+      botright cwindow
+    else
+      botright copen
+    endif
   endif
   let &errorformat = old_fmt
 endfunction

@@ -1,7 +1,7 @@
 " Vim filetype plugin
 
 " Require the flow executable.
-if !executable('flow')
+if !executable(g:flow#flowpath)
   finish
 endif
 

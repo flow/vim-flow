@@ -80,7 +80,7 @@ endfunction
 function! flow#typecheck()
   " Flow current outputs errors to stderr and gets fancy with single character
   " files
-  let flow_result = <SID>FlowClientCall('--timeout '.g:flow#timeout.' --retry-if-init false'.expand('%:p'), '2> /dev/null')
+  let flow_result = <SID>FlowClientCall('--timeout '.g:flow#timeout.' --retry-if-init false "'.expand('%:p').'"', '2> /dev/null')
   let old_fmt = &errorformat
   let &errorformat = s:flow_errorformat
 
@@ -158,7 +158,7 @@ endfunction
 
 " Open importers of current file in quickfix window
 function! flow#get_importers()
-  let flow_result = <SID>FlowClientCall('get-importers '.expand('%').' --strip-root', '')
+  let flow_result = <SID>FlowClientCall('get-importers "'.expand('%').'" --strip-root', '')
   let importers = split(flow_result, '\n')[1:1000]
 
   let l:flow_errorformat = '%f'

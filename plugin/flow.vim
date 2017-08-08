@@ -46,14 +46,14 @@ let s:flow_from = '--from vim'
 
 
 " Call wrapper for flow.
-function! <SID>FlowClientCall(cmd, suffix)
+function! <SID>FlowClientCall(cmd, suffix, ...)
   " Invoke typechecker.
   " We also concatenate with the empty string because otherwise
   " cgetexpr complains about not having a String argument, even though
   " type(flow_result) == 1.
   let command = g:flow#flowpath.' '.a:cmd.' '.s:flow_from.' '.a:suffix
 
-  let flow_result = system(command)
+  let flow_result = a:0 > 0 ? system(command, a:1) : system(command)
 
   " Handle the server still initializing
   if v:shell_error == 1
@@ -102,10 +102,11 @@ endfunction
 
 " Get the Flow type at the current cursor position.
 function! flow#get_type()
-  let pos = fnameescape(expand('%')).' '.line('.').' '.col('.')
+  let pos = line('.').' '.col('.')
   let cmd = g:flow#flowpath.' type-at-pos '.pos
+  let stdin = join(getline(1,'$'), "\n")
 
-  let output = 'FlowType: '.system(cmd)
+  let output = 'FlowType: '.system(cmd, stdin)
   let output = substitute(output, '\n$', '', '')
   echo output
 endfunction
@@ -121,8 +122,9 @@ endfunction
 
 " Jump to Flow definition for the current cursor position
 function! flow#jump_to_def()
-  let pos = fnameescape(expand('%')).' '.line('.').' '.col('.')
-  let flow_result = <SID>FlowClientCall('get-def '.pos, '')
+  let pos = line('.').' '.col('.')
+  let stdin = join(getline(1,'$'), "\n")
+  let flow_result = <SID>FlowClientCall('get-def '.pos, '', stdin)
   " Output format is:
   "   File: "/path/to/file", line 1, characters 1-11
 
@@ -150,8 +152,11 @@ function! flow#jump_to_def()
     let col = split(split(parts[2], " ")[1], "-")[0]
   endif
 
-  if filereadable(file)
-    execute 'edit' file
+  " File - means current file
+  if filereadable(file) || file == '-'
+    if file != '-'
+      execute 'edit' file
+    endif
     call cursor(row, col)
   end
 endfunction

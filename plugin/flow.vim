@@ -103,7 +103,8 @@ endfunction
 " Get the Flow type at the current cursor position.
 function! flow#get_type()
   let pos = line('.').' '.col('.')
-  let cmd = g:flow#flowpath.' type-at-pos '.pos
+  let path = ' --path '.fnameescape(expand('%'))
+  let cmd = g:flow#flowpath.' type-at-pos '.pos.path
   let stdin = join(getline(1,'$'), "\n")
 
   let output = 'FlowType: '.system(cmd, stdin)
@@ -123,8 +124,9 @@ endfunction
 " Jump to Flow definition for the current cursor position
 function! flow#jump_to_def()
   let pos = line('.').' '.col('.')
+  let path = ' --path '.fnameescape(expand('%'))
   let stdin = join(getline(1,'$'), "\n")
-  let flow_result = <SID>FlowClientCall('get-def '.pos, '', stdin)
+  let flow_result = <SID>FlowClientCall('get-def '.pos.path, '', stdin)
   " Output format is:
   "   File: "/path/to/file", line 1, characters 1-11
 

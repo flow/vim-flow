@@ -126,7 +126,7 @@ function! flow#jump_to_def()
   let pos = line('.').' '.col('.')
   let path = ' --path '.fnameescape(expand('%'))
   let stdin = join(getline(1,'$'), "\n")
-  let flow_result = <SID>FlowClientCall('get-def '.pos.path, '', stdin)
+  let flow_result = <SID>FlowClientCall('get-def --quiet '.pos.path, '', stdin)
   " Output format is:
   "   File: "/path/to/file", line 1, characters 1-11
 

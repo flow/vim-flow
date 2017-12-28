@@ -34,7 +34,7 @@ function! flowcomplete#Complete(findstart, base)
 
   " Pass the buffer to flow.
   let buffer = join(lines, "\n")
-  let command = g:flow#flowpath.' autocomplete "'.expand('%:p').'"'
+  let command = g:flow#flowpath.' autocomplete --quiet "'.expand('%:p').'"'
   let result = system(command, buffer)
 
   if result =~ '^Error: not enough type information to autocomplete' ||

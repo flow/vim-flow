@@ -104,7 +104,7 @@ endfunction
 function! flow#get_type()
   let pos = line('.').' '.col('.')
   let path = ' --path '.fnameescape(expand('%'))
-  let cmd = g:flow#flowpath.' type-at-pos '.pos.path
+  let cmd = g:flow#flowpath.' type-at-pos --quiet '.pos.path
   let stdin = join(getline(1,'$'), "\n")
 
   let output = 'FlowType: '.system(cmd, stdin)
@@ -165,7 +165,7 @@ endfunction
 
 " Open importers of current file in quickfix window
 function! flow#get_importers()
-  let flow_result = <SID>FlowClientCall('get-importers "'.expand('%').'" --strip-root', '')
+  let flow_result = <SID>FlowClientCall('get-importers --quiet "'.expand('%').'" --strip-root', '')
   let importers = split(flow_result, '\n')[1:1000]
 
   let l:flow_errorformat = '%f'

@@ -22,7 +22,7 @@ syntax region flowTypeComment matchgroup=jsComment
   \ start="\/\*\%(::\?\|flow-include\)\@=" end="\*\/"
   \ contains=jsFlowArgumentDef,jsFlowClassGroup,jsFlowType,
   \          jsFlowTypeStatement,flowTypeCommentKeyword
-  \ containedin=js.*Block,jsClassDefinition,jsFuncArgs
+  \ containedin=js.*Block,jsClassDefinition,jsCommentFunction,jsFuncArgs
 
 " highlight the appropriate syntax elements accordingly
 highlight default link flowAnnotationFlag Special

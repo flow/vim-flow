@@ -104,7 +104,7 @@ endfunction
 function! flow#get_type()
   let pos = line('.').' '.col('.')
   let path = ' --path '.fnameescape(expand('%'))
-  let cmd = g:flow#flowpath.' type-at-pos --quiet '.pos.path
+  let cmd = g:flow#flowpath.' type-at-pos '.pos.path
   let stdin = join(getline(1,'$'), "\n")
 
   let output = 'FlowType: '.system(cmd, stdin)

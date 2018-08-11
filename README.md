@@ -55,11 +55,22 @@ Triggers a type check for the current file.
 
 Turns automatic checks on save on or off.
 
-#### `FlowType` 
+#### `FlowType`, `FlowTypeExpandAliases`
 
 Display the type of the variable under the cursor.
 
-#### `FlowJumpToDef` 
+The latter form (`:FlowTypeExpandAliases`) will inline any aliased types into
+the output, so for example a type like this:
+
+```js
+type Foo = number;
+type Bar = {foo: Foo};
+```
+
+Asking for the type of `Bar` will print `{foo: number}`. Notice how the `Foo`
+type alias in `Bar`'s definition was expanded to just `number`.
+
+#### `FlowJumpToDef`
 
 Jump to the definition of the variable under the cursor.
 

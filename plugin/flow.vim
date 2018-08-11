@@ -101,10 +101,18 @@ function! flow#typecheck()
 endfunction
 
 " Get the Flow type at the current cursor position.
-function! flow#get_type()
+function! flow#get_type(expand)
   let pos = line('.').' '.col('.')
   let path = ' --path '.fnameescape(expand('%'))
-  let cmd = g:flow#flowpath.' type-at-pos --quiet '.pos.path
+
+  let l:args = join([
+    \ 'type-at-pos',
+    \ '--quiet',
+    \ a:expand ? '--expand-type-aliases' : '',
+    \ pos.path,
+    \ ], ' ')
+
+  let cmd = g:flow#flowpath.' '.l:args
   let stdin = join(getline(1,'$'), "\n")
 
   let output = 'FlowType: '.system(cmd, stdin)
@@ -188,11 +196,12 @@ endfunction
 
 
 " Commands and auto-typecheck.
-command! FlowToggle       call flow#toggle()
-command! FlowMake         call flow#typecheck()
-command! FlowType         call flow#get_type()
-command! FlowJumpToDef    call flow#jump_to_def()
-command! FlowGetImporters call flow#get_importers()
+command! FlowToggle            call flow#toggle()
+command! FlowMake              call flow#typecheck()
+command! FlowType              call flow#get_type(0)
+command! FlowTypeExpandAliases call flow#get_type(1)
+command! FlowJumpToDef         call flow#jump_to_def()
+command! FlowGetImporters      call flow#get_importers()
 
 au BufWritePost *.js,*.jsx if g:flow#enable | call flow#typecheck() | endif
 

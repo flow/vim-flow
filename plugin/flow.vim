@@ -143,7 +143,7 @@ function! flow#jump_to_def()
   endif
 
   " File: "/path/to/file" => /path/to/file
-  let file = substitute(substitute(parts[0], '"', '', 'g'), 'File ', '', '')
+  let file = substitute( substitute(substitute(parts[0], '"', '', 'g'), 'File ', '', ''), '\', '/', 'g')
 
   " line 1 => 1
   let row = split(parts[1], " ")[1]

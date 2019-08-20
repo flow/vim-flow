@@ -24,9 +24,6 @@ endif
 if !exists("g:flow#qfsize")
   let g:flow#qfsize = 1
 endif
-if !exists("g:flow#flowpath")
-  let g:flow#flowpath = "flow"
-endif
 if !exists("g:flow#timeout")
   let g:flow#timeout = 2
 endif
@@ -34,15 +31,37 @@ if !exists("g:flow#showquickfix")
   let g:flow#showquickfix = 1
 endif
 
-" Require the flow executable.
-if !executable(g:flow#flowpath)
-  finish
-endif
-
 " flow error format.
 let s:flow_errorformat = '%EFile "%f"\, line %l\, characters %c-%.%#,%Z%m,'
 " flow from editor.
 let s:flow_from = '--from vim'
+
+function! <SID>GetFlowExecutable()
+  if exists("g:flow#flowpath")
+    return g:flow#flowpath
+  else
+    " Search for a local version of flow
+    let s:npm_local_flowpath = finddir("node_modules", ".;") . "/.bin/flow"
+    if filereadable(s:npm_local_flowpath)
+      return s:npm_local_flowpath
+    else
+      " fallback to global instance
+      return "flow"
+    endif
+  endif
+endfunction
+
+function! flow#SaveGetFlowExecutable()
+  let a:flow_executable = <SID>GetFlowExecutable()
+  if !executable(a:flow_executable)
+    echohl WarningMsg
+    echomsg 'No Flow executable found.'
+    echohl None
+    finish
+  else
+    return a:flow_executable
+  endif
+endfunction
 
 
 " Call wrapper for flow.
@@ -51,7 +70,7 @@ function! <SID>FlowClientCall(cmd, suffix, ...)
   " We also concatenate with the empty string because otherwise
   " cgetexpr complains about not having a String argument, even though
   " type(flow_result) == 1.
-  let command = g:flow#flowpath.' '.a:cmd.' '.s:flow_from.' '.a:suffix
+  let command = flow#SaveGetFlowExecutable().' '.a:cmd.' '.s:flow_from.' '.a:suffix
 
   let flow_result = a:0 > 0 ? system(command, a:1) : system(command)
 
@@ -104,7 +123,7 @@ endfunction
 function! flow#get_type()
   let pos = line('.').' '.col('.')
   let path = ' --path '.fnameescape(expand('%'))
-  let cmd = g:flow#flowpath.' type-at-pos '.pos.path
+  let cmd = flow#SaveGetFlowExecutable().' type-at-pos '.pos.path
   let stdin = join(getline(1,'$'), "\n")
 
   let output = 'FlowType: '.system(cmd, stdin)

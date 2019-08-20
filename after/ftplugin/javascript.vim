@@ -1,9 +1,7 @@
 " Vim filetype plugin
 
 " Require the flow executable.
-if !executable(g:flow#flowpath)
-  finish
-endif
+call flow#SaveGetFlowExecutable()
 
 " Omnicompletion.
 if !exists("g:flow#omnifunc")
